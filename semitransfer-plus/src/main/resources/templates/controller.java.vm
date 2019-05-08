@@ -1,0 +1,188 @@
+package ${package.Controller};
+
+import ${package.Entity}.${entity};
+import com.baomidou.mybatisplus.annotation.EntityField;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.semitransfer.common.api.Constants;
+import com.semitransfer.plus.config.internal.annotation.AclManage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import static com.semitransfer.common.api.request.DesktopEndRequest.*;
+import static com.semitransfer.common.api.response.DesktopEndResponse.*;
+import com.alibaba.fastjson.JSONObject;
+import ${package.Service}.${table.serviceName};
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+@EntityField(${entity}.class)
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+   /**
+   * 日志输出
+   */
+   private final Logger logger = LoggerFactory.getLogger(${table.controllerName}.class);
+
+   /**
+   * $!{table.comment} 服务类
+   */
+   @Autowired
+   private ${table.serviceName} i${entity}Service;
+
+   /**
+	* $!{table.comment}分页列表
+	*
+    * @author ${author}
+    * @date ${date}
+	*/
+	@AclManage("$!{table.comment}-列表")
+	@RequestMapping(Constants.FIELD_LIST)
+	public void list() {
+		//请求参数解析
+		JSONObject params = requestMessage(getRequest());
+		try {
+			// 返回信息
+			write(this.i${entity}Service.list${entity}(params), getResponse());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    //系统异常
+			responseMessage(Constants.NUM_ONE, getResponse());
+		}
+	}
+
+
+	/**
+	 * $!{table.comment}获取单个信息
+	 *
+	 * @author ${author}
+	 * @date ${date}
+	 */
+	@AclManage("$!{table.comment}-查询")
+	@RequestMapping(Constants.FIELD_GET)
+	public void get() {
+	    //请求参数解析
+		JSONObject params = requestMessage(getRequest());
+		try {
+		    // 返回信息
+			write(this.i${entity}Service.get${entity}(params.getInteger(Constants.FIELD_ID)), getResponse());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    //系统异常
+			responseMessage(Constants.NUM_ONE, getResponse());
+		}
+	}
+
+
+	/**
+	 * $!{table.comment}新增操作
+	 *
+	 * @author ${author}
+	 * @date ${date}
+	 */
+	@AclManage("$!{table.comment}-新增")
+	@RequestMapping(Constants.FIELD_SAVE)
+	public void save() {
+	    //请求参数解析
+		JSONObject params = requestMessage(getRequest());
+		try {
+		    // 返回信息
+			write(this.i${entity}Service.save${entity}(params), getResponse());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    //系统异常
+			responseMessage(Constants.NUM_ONE, getResponse());
+		}
+	}
+
+
+	/**
+	 * $!{table.comment}更新操作
+	 *
+	 * @author ${author}
+	 * @date ${date}
+	 */
+	@AclManage("$!{table.comment}-更新")
+	@RequestMapping(Constants.FIELD_UPDATE)
+	public void update() {
+	    //请求参数解析
+		JSONObject params = requestMessage(getRequest());
+		try {
+		    // 返回信息
+			write(this.i${entity}Service.update${entity}(params), getResponse());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    //系统异常
+			responseMessage(Constants.NUM_ONE, getResponse());
+		}
+	}
+
+
+	/**
+	 * $!{table.comment}删除操作
+	 *
+	 * @author ${author}
+	 * @date ${date}
+	 */
+	@AclManage("$!{table.comment}-删除")
+	@RequestMapping(Constants.FIELD_REMOVE)
+	public void remove() {
+	    //请求参数解析
+		JSONObject params = requestMessage(getRequest());
+		try {
+		    // 返回信息
+			write(this.i${entity}Service.remove${entity}(params.getInteger(Constants.FIELD_ID)), getResponse());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    //系统异常
+			responseMessage(Constants.NUM_ONE, getResponse());
+		}
+	}
+	
+	
+	/**
+	 * $!{table.comment}新增字段类型
+	 *
+	 * @author ${author}
+	 * @date ${date}
+	 */
+	@AclManage("$!{table.comment}-预新增字段")
+	@RequestMapping(Constants.FIELD_PREADDED)
+	public void preAdded() {
+		try {
+		    // 返回信息
+		responseSaveMessage(getResponse(), ${entity}.class);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    //系统异常
+			responseMessage(Constants.NUM_ONE, getResponse());
+		}
+	}
+}
+#end
